@@ -499,6 +499,14 @@ for (const input of [els.name, els.relationship, els.born, els.died, els.place, 
   input.addEventListener('input', updateCard);
 }
 
+// Ctrl/Cmd + Enter writes the card from anywhere on the page.
+document.addEventListener('keydown', (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+    event.preventDefault();
+    if (!state.busy) writeCard();
+  }
+});
+
 /* ---------- boot ---------- */
 
 els.downloadBtn.disabled = true;
