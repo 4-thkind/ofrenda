@@ -5,6 +5,7 @@
   "type": "module",
   "description": "An offline oral-history keeper: record a family story, transcribe and remember it locally with open-weight models.",
   "scripts": {
+    "test": "node test/run.mjs",
     "serve": "python -m http.server 3000"
   },
   "license": "MIT"
