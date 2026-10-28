@@ -59,6 +59,8 @@ const state = {
   recording: false,
 };
 
+let playerUrl = null;
+
 const PLACEHOLDER = {
   title: 'A Story Kept',
   name: 'Your story',
@@ -464,8 +466,15 @@ els.stopBtn.addEventListener('click', () => {
 els.fileInput.addEventListener('change', async () => {
   const file = els.fileInput.files && els.fileInput.files[0];
   if (!file) return;
-  els.player.src = URL.createObjectURL(file);
+
+  // Choosing the same file twice must fire again, and the previous object URL
+  // should not outlive the player.
+  if (playerUrl) URL.revokeObjectURL(playerUrl);
+  playerUrl = URL.createObjectURL(file);
+  els.player.src = playerUrl;
   els.player.classList.remove('hidden');
+  els.fileInput.value = '';
+
   await handleAudio(await file.arrayBuffer(), file.name);
 });
 
