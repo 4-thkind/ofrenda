@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ofrenda — keep a family story, offline</title>
+    <meta
+      name="description"
+      content="Record one family story. Whisper transcribes it and Gemma writes a remembrance, both on your own machine. Print the card. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#150e18" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23150e18'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23eaa94a'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23150e18'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <svg class="papel" viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <pattern id="papel-cuts" width="144" height="26" patternUnits="userSpaceOnUse">
+          <path d="M0 0h46l-23 24z" fill="#eaa94a" />
+          <path d="M48 0h46l-23 24z" fill="#d4552f" />
+          <path d="M96 0h46l-23 24z" fill="#9a5f8f" />
+        </pattern>
+      </defs>
+      <rect width="1200" height="26" fill="url(#papel-cuts)" />
+    </svg>
+
+    <header class="masthead">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        <div>
+          <h1>Ofrenda</h1>
+          <p>a family story, kept offline</p>
+        </div>
+      </div>
+      <div class="badges" aria-live="polite">
+        <span class="badge" id="asrBadge">whisper · asleep</span>
+        <span class="badge" id="writerBadge">gemma · asleep</span>
+        <span class="badge quiet">nothing leaves this tab</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="lede">
+        <h2>Keep the voice, not the cloud.</h2>
+        <p>
+          Record one family story. Whisper transcribes it here, Gemma writes a remembrance
+          here, and the card is yours to print. The audio, the words and the name never
+          become a request to anybody's server.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <div class="steps">
+          <section class="panel" id="panel-record">
+            <h3><span class="num">1</span> The recording</h3>
+            <p class="hint">A voice memo is enough. One memory, up to three minutes.</p>
+            <div class="row">
+              <button id="recordBtn" class="primary" type="button">
+                <span class="dot" aria-hidden="true"></span> Start recording
+              </button>
+              <button id="stopBtn" class="ghost hidden" type="button">Stop</button>
+              <label class="upload">
+                Choose a file
+                <input id="fileInput" type="file" accept="audio/*" />
+              </label>
+              <button id="sampleBtn" class="ghost" type="button">Use the sample story</button>
+            </div>
+            <audio id="player" class="hidden" controls preload="metadata"></audio>
+            <p class="meta" id="audioMeta"></p>
+          </section>
+
+          <section class="panel" id="panel-words">
+            <h3><span class="num">2</span> The words</h3>
+            <p class="hint">
+              Whisper's transcript. Fix a name if it misheard — the card should be right.
+            </p>
+            <label class="field wide">
+              <span>Transcript</span>
+              <textarea id="transcript" rows="8" placeholder="The story will appear here after it is heard."></textarea>
+            </label>
+            <div class="fields">
+              <label class="field">
+                <span>Name</span>
+                <input id="name" type="text" placeholder="Amma" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Relationship</span>
+                <input id="relationship" type="text" placeholder="grandmother" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Born</span>
+                <input id="born" type="text" inputmode="numeric" placeholder="1938" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Died</span>
+                <input id="died" type="text" inputmode="numeric" placeholder="2019" autocomplete="off" />
+              </label>
+              <label class="field span2">
+                <span>Place</span>
+                <input id="place" type="text" placeholder="Kochi" autocomplete="off" />
+              </label>
+            </div>
+            <button id="writeBtn" class="primary" type="button">Write the card</button>
+          </section>
+
+          <section class="panel" id="panel-card" aria-disabled="true">
+            <h3><span class="num">3</span> The card</h3>
+            <p class="hint">Pick the line that sounds most like them.</p>
+            <div class="chips" id="quoteChips"></div>
+            <label class="field wide">
+              <span>Title</span>
+              <input id="title" type="text" placeholder="What the Kitchen Kept" autocomplete="off" />
+            </label>
+            <label class="field wide">
+              <span>Remembrance</span>
+              <textarea id="remembrance" rows="5"></textarea>
+            </label>
+            <div class="row">
+              <button id="downloadBtn" class="primary" type="button">Download the card</button>
+              <button id="keepBtn" class="ghost" type="button">Keep on the shelf</button>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-shelf">
+            <h3>The shelf <span class="count" id="shelfCount">0 kept</span></h3>
+            <p class="hint">
+              Cards stay in this browser. Twelve fit on the shelf; export the PNGs for
+              anything you want to keep for good.
+            </p>
+            <div class="shelf" id="shelf">
+              <p class="empty">Nothing kept yet. The first card is the hardest.</p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="preview">
+          <canvas id="cardCanvas" width="1200" height="1600" aria-label="Preview of the keepsake card"></canvas>
+          <div class="status" id="status" role="status" aria-live="polite">
+            Ready when you are.
+          </div>
+          <div class="bar" id="bar" hidden><i id="barFill"></i></div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        Built for Hacktoberfest 2026 · Whisper tiny.en and Gemma 3 1B via Transformers.js ·
+        MIT. The models download once, then everything runs on this machine.
+      </p>
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
