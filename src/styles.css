@@ -578,3 +578,48 @@ footer p {
     transition: none !important;
   }
 }
+
+/* The card is a keepsake: print it at 4x6 inches and nothing else. */
+@media print {
+  @page {
+    size: 4in 6in;
+    margin: 0;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  body::before,
+  .papel,
+  .masthead,
+  .lede,
+  .steps,
+  .badges,
+  .status,
+  .bar,
+  footer {
+    display: none !important;
+  }
+
+  .workspace {
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  .preview {
+    position: static;
+    max-width: none;
+  }
+
+  #cardCanvas {
+    width: 4in;
+    height: 6in;
+    margin: 0 auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+}
